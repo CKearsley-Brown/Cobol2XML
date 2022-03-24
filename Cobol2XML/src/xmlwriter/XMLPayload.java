@@ -38,6 +38,8 @@ import org.w3c.dom.Element;
 
 import java.util.logging.Logger;
 
+import org.w3c.dom.Attr;
+
 
 
 
@@ -68,6 +70,19 @@ public class XMLPayload {
 	
 	
 	public void addElements(Cobol c) {
+		/*
+		 *  add ConstantName element
+		 */
+		String constantName = c.getConstantName();
+		if (constantName != null)
+		{
+			this.addConstantValueElement( constantName, c.getConstantValue(), c.getLineNumber() );
+			//System.out.println("Got Section");
+			//Add contents of procedure division
+		} else {
+			//System.out.println("Comment Line null");
+		}
+		
 		/*
 		 *  add sectionName element
 		 */		
@@ -202,6 +217,38 @@ public class XMLPayload {
 			String s = "" + intElement;
 			cobolname.appendChild(doc.createTextNode(s));
 			rootElement.appendChild(cobolname);
+		}
+	}
+	
+	void addConstantValueElement(String constantName, double constantValue, int lineNumber) 
+	{
+		//Program ID element
+		
+		if(constantName != null) {
+			Element colbolName = doc.createElement("Constant");
+			
+			//insert name of constant into XML file
+			Element constID = doc.createElement("Constant");
+			Attr attrType2 = doc.createAttribute("Name");
+			attrType2.setValue(constantName);
+			constID.setAttributeNode(attrType2);
+			colbolName.appendChild(constID);
+			
+			//insert line number of constant into XML file
+			Element lineID = doc.createElement(constantName);
+			Attr attrType = doc.createAttribute("Line_Number");
+			attrType.setValue(Integer.toString(lineNumber));
+			lineID.setAttributeNode(attrType);
+			colbolName.appendChild(lineID);
+			
+			//insert value of constant into XML file
+			Element constantID = doc.createElement(constantName);
+			Attr attrType1 = doc.createAttribute("Value");
+			attrType1.setValue(Double.toString(constantValue));
+			constantID.setAttributeNode(attrType1);
+			colbolName.appendChild(constantID);
+			
+			rootElement.appendChild(colbolName);
 		}
 	}
 	

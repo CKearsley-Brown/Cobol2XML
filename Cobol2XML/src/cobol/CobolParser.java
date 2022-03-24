@@ -55,7 +55,10 @@ public class CobolParser {
 		
 		a.add( DateWritten() );
 		
+		a.add( constantValue() );
+		
 		a.add(new Empty());
+	
 		return a;
 	}
 	
@@ -123,6 +126,22 @@ public class CobolParser {
 		s.add(new Word().discard());
 		s.add(new Symbol('.').discard());
 		s.setAssembler(new DateAssembler());
+		return s;
+	}
+	
+	/*
+	 * Return a parser that will recognise the grammar:
+	 * 
+	 * 		<line number> <constant name> "value" <constant value>.
+	 */
+	protected Parser constantValue() {
+		//System.out.println("constantValue()");
+		Sequence s = new Sequence();
+		s.add(new Num() );
+		s.add(new Word() );
+		s.add(new CaselessLiteral("value") );
+		s.add(new Num() );
+		s.setAssembler(new ConstantValueAssembler());
 		return s;
 	}
 
